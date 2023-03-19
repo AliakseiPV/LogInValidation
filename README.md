@@ -6,4 +6,4 @@ LogInValidation is a simple programm wich containing authorization fields for ch
 * Java-script
 
 Author
-* Gitgub: [@AliakseiPV][https://github.com/AliakseiPV]
+* Gitgub: [@AliakseiPV]: https://github.com/AliakseiPV
