@@ -115,21 +115,21 @@ function createTitle(parentElement, text){
 }
 
 function createInput(parentElement){
-    parentElement.appendChild(createBaseElement({element: "div", className: "form_input", id: "form_username"}));
+    parentElement.appendChild(createBaseElement({className: "form_input", id: "form_username"}));
     form_username.innerHTML = '<label for="username">Username:</label>' +
     '<input type="text" name="username" id="username" placeholder="username">';
 
-    parentElement.appendChild(createBaseElement({element: "div", className: "form_input", id: "form_password"}));
+    parentElement.appendChild(createBaseElement({className: "form_input", id: "form_password"}));
     form_password.innerHTML = '<label for="password">Password:</label>' +
     '<input type="password" name="password" id="password" placeholder="password">';
 }
 
 function createButton(parentElement){
-    parentElement.appendChild(createBaseElement({element: "div", className: "button", id: ""}));
+    parentElement.appendChild(createBaseElement({className: "button", id: ""}));
     document.querySelector(".button").innerHTML = '<button id="login_btn">login</button>';
 }
 
-function createBaseElement({element, className, id}){
+function createBaseElement({element = "div", className, id}){
     const new_element = document.createElement(element);
     if(className) new_element.setAttribute("class", className);
     if(id) new_element.setAttribute("id", id);
