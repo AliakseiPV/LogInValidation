@@ -1,4 +1,4 @@
-document.body.append(createLoginForm());
+createLoginForm();
 
 const userInfo = {
     username: "user",
@@ -92,41 +92,49 @@ function removeError(){
 
 // Creating html registration form
 function createLoginForm() {
-    const div_form_container = document.createElement("div");
-    div_form_container.setAttribute("class", "form_container")
+    createFormContainer();
 
-    const form = div_form_container.appendChild(document.createElement("form"));
-    form.setAttribute("class", "form");
-    form.setAttribute("id", "login")
-
-    const title = form.appendChild(document.createElement("h1"));
-    title.textContent = "Login form";
-
-    const div_form_userName = form.appendChild(document.createElement("div"));
-    div_form_userName.setAttribute("class", "form_input");
-    div_form_userName.setAttribute("id", "form_username");
-    div_form_userName.innerHTML = '<label for="username">Username:</label>' +
-    '<input type="text" name="username" id="username" placeholder="username">';
-
-    const div_form_password = form.appendChild(document.createElement("div"));
-    div_form_password.setAttribute("class", "form_input");
-    div_form_password.setAttribute("id", "form_password");
-    div_form_password.innerHTML = '<label for="password">Password:</label>' +
-    '<input type="password" name="password" id="password" placeholder="password">';
-
-    const div_button = form.appendChild(document.createElement("div"));
-    div_button.setAttribute("class", "button");
-    div_button.innerHTML = '<button id="login_btn">login</button>';
-    
-    document.body.append(div_form_container);
-    return div_form_container;
+    const parentElement = document.getElementById("login");
+    createTitle(parentElement, "Login form");
+    createInput(parentElement);
+    createButton(parentElement); 
 }
 
+function createFormContainer(){
+    const div_form_container = document.createElement("div");
+    div_form_container.setAttribute("class", "form_container");
 
+    document.body.append(div_form_container);
 
+    reusebleElements({parentElement: div_form_container, element: "form", class: "form", id: "login"});
+}
 
+function createTitle(parentElement, text){
+    const title = parentElement.appendChild(document.createElement("h1"));
+    title.textContent = text;
+}
 
+function createInput(parentElement){
+    reusebleElements({parentElement: parentElement, element: "div", class: "form_input", id: "form_username"});
+    form_username.innerHTML = '<label for="username">Username:</label>' +
+    '<input type="text" name="username" id="username" placeholder="username">';
 
+    reusebleElements({parentElement: parentElement, element: "div", class: "form_input", id: "form_password"})
+    form_password.innerHTML = '<label for="password">Password:</label>' +
+    '<input type="password" name="password" id="password" placeholder="password">';
+}
 
+function createButton(parentElement){
+    reusebleElements({parentElement: parentElement, element: "div", class: "button", id: ""})
+    document.querySelector(".button").innerHTML = '<button id="login_btn">login</button>';
+}
+
+//
+//{parentElement: "parent element", element: "element you want to create", id: "idName", class: "idClass" }
+function reusebleElements(object){
+    const new_element = object.parentElement.appendChild(document.createElement(object.element));
+    if(object.class) new_element.setAttribute("class", object.class);
+    if(object.id) new_element.setAttribute("id", object.id);
+}
 
 
