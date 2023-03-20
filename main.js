@@ -92,41 +92,33 @@ function removeError(){
 
 // Creating html registration form
 function createLoginForm() {
-    createFormContainer();
+    document.body.append(createFormContainer());
 
     const parentElement = document.getElementById("login");
-    createTitle(parentElement, "Login form");
-    createInput(parentElement);
-    createButton(parentElement); 
+    parentElement.appendChild(createTitle("Login form"));
+    parentElement.appendChild(createInputUsername());
+    parentElement.appendChild(createInputPassword());
+    parentElement.appendChild(createButton("login_btn")); 
 }
 
 function createFormContainer(){
-    const div_form_container = document.createElement("div");
-    div_form_container.setAttribute("class", "form_container");
-
-    document.body.append(div_form_container);
-
+    const div_form_container = createBaseElement({className: "form_container", id: ""});
     div_form_container.appendChild(createBaseElement({element: "form", className: "form", id: "login"}));
+    return div_form_container;
 }
 
-function createTitle(parentElement, text){
-    const title = parentElement.appendChild(document.createElement("h1"));
-    title.textContent = text;
+function createInputUsername(){
+    const username = createBaseElement({className: "form_input", id: "form_username"});
+    username.appendChild(createLabel("username", "Username"));
+    username.appendChild(createInput("username"));
+    return username;
 }
 
-function createInput(parentElement){
-    parentElement.appendChild(createBaseElement({className: "form_input", id: "form_username"}));
-    form_username.innerHTML = '<label for="username">Username:</label>' +
-    '<input type="text" name="username" id="username" placeholder="username">';
-
-    parentElement.appendChild(createBaseElement({className: "form_input", id: "form_password"}));
-    form_password.innerHTML = '<label for="password">Password:</label>' +
-    '<input type="password" name="password" id="password" placeholder="password">';
-}
-
-function createButton(parentElement){
-    parentElement.appendChild(createBaseElement({className: "button", id: ""}));
-    document.querySelector(".button").innerHTML = '<button id="login_btn">login</button>';
+function createInputPassword(){
+    const password = createBaseElement({className: "form_input", id: "form_password"});
+    password.appendChild(createLabel("password", "Password"));
+    password.appendChild(createInput("password"));
+    return password;
 }
 
 function createBaseElement({element = "div", className, id}){
@@ -136,4 +128,31 @@ function createBaseElement({element = "div", className, id}){
     return new_element;
 }
 
+function createButton(id){
+    const div_button = createBaseElement({className: "button", id: ""});
+    const button = createBaseElement({element: "button", className: "", id: id});
+    button.textContent = "login";
+    div_button.appendChild(button);
+    return div_button;
+}
 
+function createTitle(text){
+    const title = document.createElement("h1");
+    title.textContent = text;
+    return title;
+}
+
+function createLabel(htmlFor, text){
+    const label = document.createElement("label");
+    label.htmlFor = htmlFor;
+    label.textContent = text;
+    return label;
+} 
+
+function createInput(id){
+    const username = createBaseElement({element: "input", className: "", id: id});
+    username.type = id;
+    username.name = id;
+    username.placeholder = id;
+    return username;
+}
