@@ -103,50 +103,50 @@ function createLoginForm() {
 
 function createFormContainer(){
     const div_form_container = createBaseElement({className: "form_container"});
-    div_form_container.appendChild(createBaseElement({element: "form", className: "form", id: "login"}));
+    div_form_container.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
     
     return div_form_container;
 }
 
-function createInputField(id, typeInput, labelText){
-    const inputField = createBaseElement({className: "form_input", id});
-    inputField.appendChild(createLabel(typeInput, labelText));
-    inputField.appendChild(createInput(typeInput));
+function createInputField(divId, inputName, labelText){
+    const inputField = createBaseElement({className: "form_input", tagId: divId});
+    inputField.appendChild(createLabel(inputName, labelText));
+    inputField.appendChild(createInput(inputName));
     return inputField;
 }
 
-function createBaseElement({element = "div", className, id}){
-    const new_element = document.createElement(element);
-    if(className) new_element.setAttribute("class", className);
-    if(id) new_element.setAttribute("id", id);
-    return new_element;
+function createBaseElement({tagName = "div", className, tagId}){
+    const baseElement = document.createElement(tagName);
+    if(className) baseElement.setAttribute("class", className);
+    if(tagId) baseElement.setAttribute("id", tagId);
+    return baseElement;
 }
 
-function createButton(id){
+function createButton(buttonId){
     const div_button = createBaseElement({className: "button"});
-    const button = createBaseElement({element: "button", id});
+    const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
     div_button.appendChild(button);
     return div_button;
 }
 
-function createTitle(text){
+function createTitle(titleText){
     const title = document.createElement("h1");
-    title.textContent = text;
+    title.textContent = titleText;
     return title;
 }
 
-function createLabel(htmlFor, text){
+function createLabel(htmlForName, labelText){
     const label = document.createElement("label");
-    label.htmlFor = htmlFor;
-    label.textContent = text;
+    label.htmlForName = htmlForName;
+    label.textContent = labelText;
     return label;
 } 
 
-function createInput(id){
-    const username = createBaseElement({element: "input", id});
-    username.type = id;
-    username.name = id;
-    username.placeholder = id;
+function createInput(name, inputId = name, placeholder = name, type = name){
+    const username = createBaseElement({tagName: "input", tagId: inputId});
+    username.type = type;
+    username.name = name;
+    username.placeholder = placeholder;
     return username;
 }
