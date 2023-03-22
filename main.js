@@ -150,3 +150,4 @@ function createInput(name, inputId = name, placeholder = name, type = name){
     input.placeholder = placeholder;
     return input;
 }
+
