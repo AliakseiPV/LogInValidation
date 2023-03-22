@@ -1,5 +1,9 @@
 createLoginForm();
 
+let validationErrors = {};
+let formValues = {};
+let touchedElements = [];
+
 const userInfo = {
     username: "user",
     password: "test",
@@ -9,35 +13,49 @@ const userInfo = {
 const loginForm = document.querySelector("#login")
 const usernameInput = document.querySelector("#username");
 const userPassword = document.querySelector("#password");
+const submitButton = document.querySelector("#login_btn");
+
+document.addEventListener("DOMContentLoaded", function(){
+    usernameInput.value = localStorage.getItem("userInput");
+})
+
+loginForm.addEventListener("click", function(e) {
+    if(e.target === usernameInput || e.target === userPassword || e.target === submitButton){
+        touchedElements.push(e.target);
+    }
+    if(e.target === submitButton){
+        removeError();
+    }
+});
 
 loginForm.addEventListener("submit",function(e){
-    
-     e.preventDefault();
+    e.preventDefault();
 
-    if (isValidUsername() && isValidPassword()) {
-        if (checkData()) {
+    formValues.valueUsername = usernameInput.value;
+    formValues.valuePassword = userPassword.value;
+    localStorage.setItem("userInput", formValues.valueUsername);
+
+    if (isValidUsername() & isValidPassword()) {
+        if (checkUsername() & checkPassword()) {
             userInfo.token = "xxx"
             alert("correct");
-        } else{
-            fieldsClear();
         }
-    } else{
-        fieldsClear();
-    }    
-    
+    }  
 });
 
 function isValidUsername() {
     const nameRegex = /^[a-zA-Z\-]+$/;
 
     if(!usernameInput.value){
-        showError("form_username","The username is empty");
+        validationErrors.errorUsername = "The username is empty";
     } else if(usernameInput.value.length > 10 || usernameInput.value.length < 4){
-        showError("form_username","The username should be between 4 - 10");
+        validationErrors.errorUsername = "The username should be between 4 - 10";
     } else if(!usernameInput.value.match(nameRegex)){
-        showError("form_username","the username contains characters that are not allowed");
+        validationErrors.errorUsername = "The username contains characters that are not allowed";
     } else 
         return true;
+
+    showError("form_username",validationErrors.errorUsername);
 
     return false;
 }
@@ -46,36 +64,42 @@ function isValidPassword() {
     const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
 
     if(!userPassword.value){
-        showError("form_password","The user password is empty")
+        validationErrors.errorPassword = "The password is empty";
     } else if(userPassword.value.length > 15 || userPassword.value.length < 4){
-        showError("form_password","The user password should be between 4 - 15")
+        validationErrors.errorPassword = "The password should be between 4 - 15";
     } else if(!userPassword.value.match(nameRegex)){
-        showError("form_password","The user password contains characters that are not allowed")
+        validationErrors.errorPassword = "The password contains characters that are not allowed";
     } else
         return true;
 
+    showError("form_password",validationErrors.errorPassword);
+
     return false;
 }
 
-//Checking for a matching login and password
-function checkData() { 
-    if(usernameInput.value === userInfo.username &&
-        userPassword.value === userInfo.password){
+function checkPassword(){
+    if(userPassword.value === userInfo.password){
         return true;
-    } else showError("form_username","Username or password is not correct");
-
+    } else {
+        validationErrors.errorcheckData = "Password is not correct";
+        showError("form_password",validationErrors.errorcheckData);
+    }
     return false;
 }
 
-function fieldsClear() {
-    usernameInput.value = "";
-    userPassword.value = "";
+function checkUsername(){
+    if(usernameInput.value === userInfo.username ){
+        return true;   
+    } else {
+        validationErrors.errorcheckData = "Username is not correct";
+        showError("form_username",validationErrors.errorcheckData);
+    }
+    return false;
 }
 
 // Output exeption message
 function showError(elementId, textError)
 {    
-    removeError();
     const error = document.getElementById(elementId).appendChild(document.createElement("p"));
     error.classList.add("error");
     error.textContent = textError;
@@ -85,7 +109,8 @@ function showError(elementId, textError)
 function removeError(){
     if(document.getElementById("form_username").contains(document.querySelector(".error"))){
         document.getElementById("form_username").removeChild(document.querySelector(".error"));
-    } else if(document.getElementById("form_password").contains(document.querySelector(".error"))){
+    } 
+    if(document.getElementById("form_password").contains(document.querySelector(".error"))){
         document.getElementById("form_password").removeChild(document.querySelector(".error"));
     }
 }
