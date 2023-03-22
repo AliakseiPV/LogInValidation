@@ -123,11 +123,11 @@ function createBaseElement({tagName = "div", className, tagId}){
 }
 
 function createButton(buttonId){
-    const div_button = createBaseElement({className: "button"});
+    const divButton = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
-    div_button.appendChild(button);
-    return div_button;
+    divButton.appendChild(button);
+    return divButton;
 }
 
 function createTitle(titleText){
