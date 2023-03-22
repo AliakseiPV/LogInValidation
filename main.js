@@ -123,11 +123,11 @@ function createBaseElement({tagName = "div", className, tagId}){
 }
 
 function createButton(buttonId){
-    const divButton = createBaseElement({className: "button"});
+    const div_button = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
-    divButton.appendChild(button);
-    return divButton;
+    div_button.appendChild(button);
+    return div_button;
 }
 
 function createTitle(titleText){
@@ -144,9 +144,9 @@ function createLabel(htmlForName, labelText){
 } 
 
 function createInput(name, inputId = name, placeholder = name, type = name){
-    const username = createBaseElement({tagName: "input", tagId: inputId});
-    username.type = type;
-    username.name = name;
-    username.placeholder = placeholder;
-    return username;
+    const input = createBaseElement({tagName: "input", tagId: inputId});
+    input.type = type;
+    input.name = name;
+    input.placeholder = placeholder;
+    return input;
 }
