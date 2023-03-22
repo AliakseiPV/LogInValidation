@@ -102,10 +102,10 @@ function createLoginForm() {
 }
 
 function createFormContainer(){
-    const div_form_container = createBaseElement({className: "form_container"});
-    div_form_container.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
+    const divFormContainer = createBaseElement({className: "form_container"});
+    divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
     
-    return div_form_container;
+    return divFormContainer;
 }
 
 function createInputField(divId, inputName, labelText){
@@ -123,11 +123,11 @@ function createBaseElement({tagName = "div", className, tagId}){
 }
 
 function createButton(buttonId){
-    const div_button = createBaseElement({className: "button"});
+    const divButton = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
-    div_button.appendChild(button);
-    return div_button;
+    divButton.appendChild(button);
+    return divButton;
 }
 
 function createTitle(titleText){
