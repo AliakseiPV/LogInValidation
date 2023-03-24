@@ -16,8 +16,8 @@ const userPassword = document.querySelector("#password");
 const submitButton = document.querySelector("#login_btn");
 
 document.addEventListener("input", function(){
-    formValues.valueUsername = usernameInput.value;
-    formValues.valuePassword = userPassword.value;
+    setFormValue("valueUsername",usernameInput.value)
+    setFormValue("valuePassword",userPassword.value)
 });
 
 loginForm.addEventListener("click", function(e) {
@@ -41,11 +41,11 @@ function isValidUsername() {
     const nameRegex = /^[a-zA-Z\-]+$/;
 
     if(!usernameInput.value){
-        SetValidationError("errorUsername","The username is empty");
+        setValidationError("errorUsername","The username is empty");
     } else if(usernameInput.value.length > 10 || usernameInput.value.length < 4){
-        SetValidationError("errorUsername","The username should be between 4 - 10");
+        setValidationError("errorUsername","The username should be between 4 - 10");
     } else if(!usernameInput.value.match(nameRegex)){
-        SetValidationError("errorUsername","The username contains characters that are not allowed");
+        setValidationError("errorUsername","The username contains characters that are not allowed");
     } else 
         return true;
 
@@ -58,11 +58,11 @@ function isValidPassword() {
     const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
 
     if(!userPassword.value){
-        SetValidationError("errorPassword","The password is empty");
+        setValidationError("errorPassword","The password is empty");
     } else if(userPassword.value.length > 15 || userPassword.value.length < 4){
-        SetValidationError("errorPassword","The password should be between 4 - 15");
+        setValidationError("errorPassword","The password should be between 4 - 15");
     } else if(!userPassword.value.match(nameRegex)){
-        SetValidationError("errorPassword","The password contains characters that are not allowed");
+        setValidationError("errorPassword","The password contains characters that are not allowed");
     } else
         return true;
 
@@ -75,7 +75,7 @@ function checkPassword(){
     if(userPassword.value === userInfo.password){
         return true;
     } else {
-        SetValidationError("errorcheckData","Password is not correct");
+        setValidationError("errorcheckData","Password is not correct");
         showError("password_error",validationErrors.errorcheckData);
     }
     return false;
@@ -85,13 +85,13 @@ function checkUsername(){
     if(usernameInput.value === userInfo.username ){
         return true;   
     } else {
-        SetValidationError("errorcheckData","Username is not correct");
+        setValidationError("errorcheckData","Username is not correct");
         showError("username_error",validationErrors.errorcheckData);
     }
     return false;
 }
 
-function SetValidationError(fieldNameKey, error){
+function setValidationError(fieldNameKey, error){
     validationErrors[fieldNameKey] = error;
 }
 
@@ -99,15 +99,19 @@ function showError(elementId, textError){
     document.getElementById(elementId).textContent = textError;
 }
 
+function setFormValue(fieldNameKey, value){
+    formValues[fieldNameKey] = value;
+}
+
 function createLoginForm() {
     document.body.append(createFormContainer());
 
     const parentElement = document.getElementById("login");
     parentElement.appendChild(createTitle("Login form"));
-    parentElement.appendChild(createInputField("form_username","username_error","username", "Username",
-        {inputValue: formValues.valueUsername, error: validationErrors.errorUsername}));
-    parentElement.appendChild(createInputField("form_password","password_error","password", "Password",
-        {inputValue: formValues.valuePassword, error: validationErrors.errorPassword}));
+    parentElement.appendChild(createInputField({divId: "form_username", paragraphId: "username_error",
+        inputName: "username", labelText: "Username", inputValue: formValues.valueUsername, error: validationErrors.errorUsername}));
+    parentElement.appendChild(createInputField({divId: "form_password", paragraphId: "password_error",
+        inputName: "password", labelText: "Password", inputValue: formValues.valuePassword, error: validationErrors.errorPassword}));
     parentElement.appendChild(createButton("login_btn")); 
 }
 
@@ -118,7 +122,7 @@ function createFormContainer(){
     return divFormContainer;
 }
 
-function createInputField(divId, paragraphId, inputName, labelText, {inputValue, error}){
+function createInputField({divId, paragraphId, inputName, labelText, inputValue, error}){
     const inputField = createBaseElement({className: "form_input", tagId: divId});
     inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createInput(inputValue, inputName));
@@ -163,8 +167,8 @@ function createInput(value = "", name, inputId = name, placeholder = name, type 
     return input;
 }
 
-function createParagraph(paragraphId, errorText){
-    const paragraph = createBaseElement({tagName: "p", className: "error", tagId: paragraphId});
+function createParagraph(paragraphId, errorText, className = "error"){
+    const paragraph = createBaseElement({tagName: "p", className, tagId: paragraphId});
     paragraph.textContent = errorText;
     return paragraph;
 }
