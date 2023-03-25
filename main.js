@@ -13,11 +13,11 @@ createLoginForm();
 function isValidUsername() {
     const nameRegex = /^[a-zA-Z\-]+$/;
 
-    if(!username.value){
+    if(!formValues.username){
         setValidationError("errorUsername","The username is empty");
-    } else if(username.value.length > 10 || username.value.length < 4){
+    } else if(formValues.username.length > 10 || formValues.username.length < 4){
         setValidationError("errorUsername","The username should be between 4 - 10");
-    } else if(!username.value.match(nameRegex)){
+    } else if(!formValues.username.match(nameRegex)){
         setValidationError("errorUsername","The username contains characters that are not allowed");
     } else 
         return true;
@@ -30,11 +30,11 @@ function isValidUsername() {
 function isValidPassword() {
     const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
 
-    if(!password.value){
+    if(!formValues.password){
         setValidationError("errorPassword","The password is empty");
-    } else if(password.value.length > 15 || password.value.length < 4){
+    } else if(formValues.password.value.length > 15 || formValues.password.value.length < 4){
         setValidationError("errorPassword","The password should be between 4 - 15");
-    } else if(!password.value.match(nameRegex)){
+    } else if(!formValues.password.value.match(nameRegex)){
         setValidationError("errorPassword","The password contains characters that are not allowed");
     } else
         return true;
@@ -45,7 +45,7 @@ function isValidPassword() {
 }
 
 function checkPassword(){
-    if(password.value === userInfo.password){
+    if(formValues.password.value === userInfo.password){
         return true;
     } else {
         setValidationError("errorcheckData","Password is not correct");
@@ -55,7 +55,7 @@ function checkPassword(){
 }
 
 function checkUsername(){
-    if(username.value === userInfo.username ){
+    if(formValues.username === userInfo.username ){
         return true;   
     } else {
         setValidationError("errorcheckData","Username is not correct");
@@ -91,8 +91,9 @@ function addTouchedElements(e) {
     touchedElements.push(e.target);
 }
 
-function addFormValue(nameFormValue){
-    setFormValue(nameFormValue,input.value);
+function addFormValue(fieldNameKey, value){
+    formValues[fieldNameKey] = value;
+    //setFormValue(nameFormValue,inputValue);
 }
 
 function createLoginForm() {
@@ -101,10 +102,11 @@ function createLoginForm() {
     const parentElement = document.getElementById("login");
     parentElement.appendChild(createTitle("Login form"));
     parentElement.appendChild(createInputField({divId: "form_username", paragraphId: "username_error", paragraphClass: "error",
-        inputName: "username", labelText: "Username", inputValue: formValues.valueUsername, error: validationErrors.errorUsername}));
+        inputName: "username", labelText: "Username", inputValue: formValues.username, error: validationErrors.errorUsername}));
     parentElement.appendChild(createInputField({divId: "form_password", paragraphId: "password_error", paragraphClass: "error",
-        inputName: "password", labelText: "Password", inputValue: formValues.valuePassword, error: validationErrors.errorPassword}));
-    parentElement.appendChild(createButton("login_btn")); 
+        inputName: "password", labelText: "Password", inputValue: formValues.password, error: validationErrors.errorPassword}));
+   
+        parentElement.appendChild(createButton("login_btn")); 
 }
 
 function createFormContainer(){
@@ -163,7 +165,7 @@ function createInput(value = "", name, inputId = name, placeholder = name, type 
     input.name = name;
     input.placeholder = placeholder;
 
-    input.addEventListener("input", addFormValue);
+    input.addEventListener("input", addFormValue("username", input.value));
     input.addEventListener("click", addTouchedElements);
 
     return input;
