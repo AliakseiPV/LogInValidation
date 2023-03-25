@@ -76,6 +76,25 @@ function setFormValue(fieldNameKey, value){
     formValues[fieldNameKey] = value;
 }
 
+function finalValidation(e){
+    e.preventDefault();
+
+    if (isValidUsername() & isValidPassword()) {
+        if (checkUsername() & checkPassword()) {
+            userInfo.token = "xxx"
+            alert("correct");
+        }
+    }  
+}
+
+function addTouchedElements(e) {
+    touchedElements.push(e.target);
+}
+
+function addFormValue(nameFormValue){
+    setFormValue(nameFormValue,input.value);
+}
+
 function createLoginForm() {
     document.body.append(createFormContainer());
 
@@ -92,16 +111,7 @@ function createFormContainer(){
     const divFormContainer = createBaseElement({className: "form_container"});
     const loginForm = divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
     
-    loginForm.addEventListener("submit",function(e){
-        e.preventDefault();
-    
-        if (isValidUsername() & isValidPassword()) {
-            if (checkUsername() & checkPassword()) {
-                userInfo.token = "xxx"
-                alert("correct");
-            }
-        }  
-    });
+    loginForm.addEventListener("submit",finalValidation);
 
     return divFormContainer;
 }
@@ -128,9 +138,7 @@ function createButton(buttonId){
     button.textContent = "login";
     divButton.appendChild(button);
 
-    button.addEventListener("click", function(e) {
-        touchedElements.push(e.target);
-    });
+    button.addEventListener("click", addTouchedElements);
 
     return divButton;
 }
@@ -155,13 +163,8 @@ function createInput(value = "", name, inputId = name, placeholder = name, type 
     input.name = name;
     input.placeholder = placeholder;
 
-    input.addEventListener("input", function(){
-        setFormValue(name,input.value);
-    });
-
-    input.addEventListener("click", function(e) {
-        touchedElements.push(e.target);
-    });
+    input.addEventListener("input", addFormValue);
+    input.addEventListener("click", addTouchedElements);
 
     return input;
 }
