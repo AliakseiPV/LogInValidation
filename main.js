@@ -80,26 +80,26 @@ function createLoginForm() {
     parentElement.appendChild(createTitle("Login form"));
     parentElement.appendChild(createInputField({divId: "form_username", paragraphId: "username_error", paragraphClass: "error",
         inputName: "username", labelText: "Username", inputValue: formValues.username, error: validationErrors.username,
-        funcAddTouchedElements: addTouchedElements, funcSetFormValue: setFormValue}));
+        touchedElementsHandler: addTouchedElements, setValueHandler: setFormValue}));
     parentElement.appendChild(createInputField({divId: "form_password", paragraphId: "password_error", paragraphClass: "error",
         inputName: "password", labelText: "Password", inputValue: formValues.password, error: validationErrors.password,
-        funcAddTouchedElements: addTouchedElements, funcSetFormValue: setFormValue}));
+        touchedElementsHandler: addTouchedElements, setValueHandler: setFormValue}));
     parentElement.appendChild(createButton("login_btn", addTouchedElements)); 
 }
 
-function createFormContainer(funcFinalValidation){
+function createFormContainer(finalValidationHandler){
     const divFormContainer = createBaseElement({className: "form_container"});
     const loginForm = divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
     
-    loginForm.addEventListener("submit",funcFinalValidation);
+    loginForm.addEventListener("submit",finalValidationHandler);
 
     return divFormContainer;
 }
 
-function createInputField({divId, paragraphId, paragraphClass, inputName, labelText, inputValue, error, funcAddTouchedElements, funcSetFormValue}){
+function createInputField({divId, paragraphId, paragraphClass, inputName, labelText, inputValue, error, touchedElementsHandler, setValueHandler}){
     const inputField = createBaseElement({className: "form_input", tagId: divId});
     inputField.appendChild(createLabel(inputName, labelText));
-    inputField.appendChild(createInput(funcAddTouchedElements, funcSetFormValue, inputValue, inputName));
+    inputField.appendChild(createInput(touchedElementsHandler, setValueHandler, inputValue, inputName));
     inputField.appendChild(createParagraph(paragraphId, error, paragraphClass));
     
     return inputField;
@@ -112,13 +112,13 @@ function createBaseElement({tagName = "div", className, tagId}){
     return baseElement;
 }
 
-function createButton(buttonId, funcAddTouchedElements){
+function createButton(buttonId, touchedElementsHandler){
     const divButton = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
     divButton.appendChild(button);
 
-    button.addEventListener("click", funcAddTouchedElements);
+    button.addEventListener("click", touchedElementsHandler);
     
     return divButton;
 }
@@ -136,16 +136,16 @@ function createLabel(htmlForName, labelText){
     return label;
 } 
 
-function createInput(funcAddTouchedElements, funcSetFormValue, value = "", name, inputId = name, placeholder = name, type = name){
+function createInput(touchedElementsHandler, setValueHandler, value = "", name, inputId = name, placeholder = name, type = name){
     const input = createBaseElement({tagName: "input", tagId: inputId});
     input.value = value;
     input.type = type;
     input.name = name;
     input.placeholder = placeholder;
 
-    input.addEventListener("input", funcSetFormValue);
+    input.addEventListener("input", setValueHandler);
 
-    input.addEventListener("click", funcAddTouchedElements);
+    input.addEventListener("click", touchedElementsHandler);
 
     return input;
 }
