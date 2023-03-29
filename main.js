@@ -10,7 +10,8 @@ const userInfo = {
 
 createLoginForm();
 
-function isValidUsername(setError, showError, errorId, currentUsername, correctUsername, error) {
+function isValidUsername(setError, showError, errorId, currentUsername, correctUsername, error) 
+{
     const nameRegex = /^[a-zA-Z\-]+$/;
 
     if(!currentUsername){
@@ -29,7 +30,8 @@ function isValidUsername(setError, showError, errorId, currentUsername, correctU
     return false;
 }
 
-function isValidPassword(setError, showError, errorId, currentPassword, correctPassword, error) {
+function isValidPassword(setError, showError, errorId, currentPassword, correctPassword, error) 
+{
     const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
 
     if(!currentPassword){
@@ -48,15 +50,18 @@ function isValidPassword(setError, showError, errorId, currentPassword, correctP
     return false;
 }
 
-function showError(elementId, textError) {
+function showError(elementId, textError) 
+{
     document.getElementById(elementId).textContent = textError;
 }
 
-function setValidationError(fieldNameKey, error) {
+function setValidationError(fieldNameKey, error) 
+{
     validationErrors[fieldNameKey] = error;
 }
 
-function finalValidation(e) {
+function finalValidation(e) 
+{
     e.preventDefault();
     
     if (isValidUsername(setValidationError, showError, "username_error", formValues.username, userInfo.username, validationErrors)
@@ -67,15 +72,18 @@ function finalValidation(e) {
     }  
 }
 
-function setFormValue(e) {
+function setFormValue(e) 
+{
     formValues[e.target.id] = e.target.value;
 }
 
-function setTouchedElements(e) {
+function setTouchedElements(e) 
+{
     touchedElements.push(e.target);
 }
 
-function createLoginForm() {
+function createLoginForm() 
+{
     const parentElement = createFormContainer(finalValidation);
     const loginForm = parentElement.querySelector("#login");
 
@@ -90,7 +98,8 @@ function createLoginForm() {
         error: validationErrors.username,
         onClick: setTouchedElements, 
         onInput: setFormValue}));
-    loginForm.appendChild(createInputField({
+    loginForm.appendChild(createInputField(
+        {
         divId: "form_password", 
         paragraphId: "password_error", 
         paragraphClass: "error",
@@ -99,13 +108,15 @@ function createLoginForm() {
         inputValue: formValues.password, 
         error: validationErrors.password,
         onClick: setTouchedElements, 
-        onInput: setFormValue}));
+        onInput: setFormValue
+        }));
     loginForm.appendChild(createButton("login_btn", setTouchedElements)); 
 
     document.body.append(parentElement);
 }
 
-function createFormContainer(finalValidationHandler) {
+function createFormContainer(finalValidationHandler) 
+{
     const divFormContainer = createBaseElement({className: "form_container"});
     const loginForm = divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
 
@@ -114,7 +125,8 @@ function createFormContainer(finalValidationHandler) {
     return divFormContainer;
 }
 
-function createInputField({
+function createInputField(
+    {
         divId, 
         paragraphId, 
         paragraphClass, 
@@ -123,7 +135,9 @@ function createInputField({
         inputValue, 
         error, 
         onClick, 
-        onInput}) {
+        onInput
+    }) 
+{
     const inputField = createBaseElement({className: "form_input", tagId: divId});
     inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createInput({onClick: onClick,onInput: onInput, value: inputValue, name: inputName}));
@@ -132,14 +146,16 @@ function createInputField({
     return inputField;
 }
 
-function createBaseElement({tagName = "div", className, tagId}) {
+function createBaseElement({tagName = "div", className, tagId}) 
+{
     const baseElement = document.createElement(tagName);
     if(className) baseElement.setAttribute("class", className);
     if(tagId) baseElement.setAttribute("id", tagId);
     return baseElement;
 }
 
-function createButton(buttonId, onClick) {
+function createButton(buttonId, onClick) 
+{
     const divButton = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
@@ -150,27 +166,32 @@ function createButton(buttonId, onClick) {
     return divButton;
 }
 
-function createTitle(titleText) {
+function createTitle(titleText) 
+{
     const title = document.createElement("h1");
     title.textContent = titleText;
     return title;
 }
 
-function createLabel(htmlForName, labelText) {
+function createLabel(htmlForName, labelText) 
+{
     const label = document.createElement("label");
     label.htmlForName = htmlForName;
     label.textContent = labelText;
     return label;
 } 
 
-function createInput({
+function createInput(
+    {
         onClick, 
         onInput, 
         value = "", 
         name, 
         inputId = name, 
         placeholder = name, 
-        type = name}) {
+        type = name
+    }) 
+{
     const input = createBaseElement({tagName: "input", tagId: inputId});
     input.value = value;
     input.type = type;
@@ -184,7 +205,8 @@ function createInput({
     return input;
 }
 
-function createParagraph(paragraphId, text, className) {
+function createParagraph(paragraphId, text, className) 
+{
     const paragraph = createBaseElement({tagName: "p", className, tagId: paragraphId});
     paragraph.textContent = text;
     return paragraph;
