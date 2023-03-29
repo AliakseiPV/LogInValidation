@@ -10,17 +10,16 @@ const userInfo = {
 
 createLoginForm();
 
-function isValidUsername(setError, showError, errorId, currentUsername, correctUsername, error) 
-{
+function isValidUsername(setError, showError, errorId, currentUsername, correctUsername, error) {
     const nameRegex = /^[a-zA-Z\-]+$/;
 
-    if(!currentUsername){
+    if(!currentUsername) {
         setError("errorUsername","The username is empty");
-    } else if(currentUsername.length > 10 || currentUsername.length < 4){
+    } else if(currentUsername.length > 10 || currentUsername.length < 4) {
         setError("errorUsername","The username should be between 4 - 10");
-    } else if(!currentUsername.match(nameRegex)){
+    } else if(!currentUsername.match(nameRegex)) {
         setError("errorUsername","The username contains characters that are not allowed");
-    } else if(currentUsername !== correctUsername ){
+    } else if(currentUsername !== correctUsername) {
         setError("errorUsername","Username is not correct");
     } else 
         return true;
@@ -30,17 +29,16 @@ function isValidUsername(setError, showError, errorId, currentUsername, correctU
     return false;
 }
 
-function isValidPassword(setError, showError, errorId, currentPassword, correctPassword, error) 
-{
+function isValidPassword(setError, showError, errorId, currentPassword, correctPassword, error) {
     const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
 
-    if(!currentPassword){
+    if(!currentPassword) {
         setError("errorPassword","The password is empty");
-    } else if(currentPassword.length > 15 || currentPassword.length < 4){
+    } else if(currentPassword.length > 15 || currentPassword.length < 4) {
         setError("errorPassword","The password should be between 4 - 15");
-    } else if(!currentPassword.match(nameRegex)){
+    } else if(!currentPassword.match(nameRegex)) {
         setError("errorPassword","The password contains characters that are not allowed");   
-    } else if(currentPassword !== correctPassword){
+    } else if(currentPassword !== correctPassword) {
         setError("errorPassword","Password is not correct");
     } else
         return true;
@@ -50,40 +48,34 @@ function isValidPassword(setError, showError, errorId, currentPassword, correctP
     return false;
 }
 
-function showError(elementId, textError) 
-{
+function showError(elementId, textError) {
     document.getElementById(elementId).textContent = textError;
 }
 
-function setValidationError(fieldNameKey, error) 
-{
+function setValidationError(fieldNameKey, error) {
     validationErrors[fieldNameKey] = error;
 }
 
-function finalValidation(e) 
-{
+function finalValidation(e) {
     e.preventDefault();
     
     if (isValidUsername(setValidationError, showError, "username_error", formValues.username, userInfo.username, validationErrors)
-        & isValidPassword(setValidationError, showError, "password_error", formValues.password, userInfo.password, validationErrors))
+        & isValidPassword(setValidationError, showError, "password_error", formValues.password, userInfo.password, validationErrors)) 
     {
         userInfo.token = "xxx";
         alert("correct");
     }  
 }
 
-function setFormValue(e) 
-{
+function setFormValue(e) {
     formValues[e.target.id] = e.target.value;
 }
 
-function setTouchedElements(e) 
-{
+function setTouchedElements(e) {
     touchedElements.push(e.target);
 }
 
-function createLoginForm() 
-{
+function createLoginForm() {
     const parentElement = createFormContainer(finalValidation);
     const loginForm = parentElement.querySelector("#login");
 
@@ -97,9 +89,9 @@ function createLoginForm()
         inputValue: formValues.username, 
         error: validationErrors.username,
         onClick: setTouchedElements, 
-        onInput: setFormValue}));
-    loginForm.appendChild(createInputField(
-        {
+        onInput: setFormValue
+        }));
+    loginForm.appendChild(createInputField({
         divId: "form_password", 
         paragraphId: "password_error", 
         paragraphClass: "error",
@@ -115,8 +107,7 @@ function createLoginForm()
     document.body.append(parentElement);
 }
 
-function createFormContainer(finalValidationHandler) 
-{
+function createFormContainer(finalValidationHandler) {
     const divFormContainer = createBaseElement({className: "form_container"});
     const loginForm = divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
 
@@ -125,8 +116,7 @@ function createFormContainer(finalValidationHandler)
     return divFormContainer;
 }
 
-function createInputField(
-    {
+function createInputField({
         divId, 
         paragraphId, 
         paragraphClass, 
@@ -136,8 +126,7 @@ function createInputField(
         error, 
         onClick, 
         onInput
-    }) 
-{
+    }) {
     const inputField = createBaseElement({className: "form_input", tagId: divId});
     inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createInput({onClick: onClick,onInput: onInput, value: inputValue, name: inputName}));
@@ -146,16 +135,14 @@ function createInputField(
     return inputField;
 }
 
-function createBaseElement({tagName = "div", className, tagId}) 
-{
+function createBaseElement({tagName = "div", className, tagId}) {
     const baseElement = document.createElement(tagName);
     if(className) baseElement.setAttribute("class", className);
     if(tagId) baseElement.setAttribute("id", tagId);
     return baseElement;
 }
 
-function createButton(buttonId, onClick) 
-{
+function createButton(buttonId, onClick) {
     const divButton = createBaseElement({className: "button"});
     const button = createBaseElement({tagName: "button", tagId: buttonId});
     button.textContent = "login";
@@ -166,23 +153,20 @@ function createButton(buttonId, onClick)
     return divButton;
 }
 
-function createTitle(titleText) 
-{
+function createTitle(titleText) {
     const title = document.createElement("h1");
     title.textContent = titleText;
     return title;
 }
 
-function createLabel(htmlForName, labelText) 
-{
+function createLabel(htmlForName, labelText) {
     const label = document.createElement("label");
     label.htmlForName = htmlForName;
     label.textContent = labelText;
     return label;
 } 
 
-function createInput(
-    {
+function createInput({
         onClick, 
         onInput, 
         value = "", 
@@ -190,8 +174,7 @@ function createInput(
         inputId = name, 
         placeholder = name, 
         type = name
-    }) 
-{
+    }) {
     const input = createBaseElement({tagName: "input", tagId: inputId});
     input.value = value;
     input.type = type;
@@ -205,8 +188,7 @@ function createInput(
     return input;
 }
 
-function createParagraph(paragraphId, text, className) 
-{
+function createParagraph(paragraphId, text, className) {
     const paragraph = createBaseElement({tagName: "p", className, tagId: paragraphId});
     paragraph.textContent = text;
     return paragraph;
