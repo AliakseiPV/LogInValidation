@@ -72,17 +72,16 @@ function onSubmitHandler(e) {
         alert("correct");
     } else {
         setFormErrors("authentication", "Username or password is not correct");
-        //renderLoginForm();
     }
 }
 
 function renderLoginForm() {
 
     const parentElement = createFormContainer(onSubmitHandler);
-    const loginForm = parentElement.querySelector("#login");
+    const loginForm = parentElement.children.item(0);
 
     loginForm.appendChild(createTitle("Login form"));
-    const usernameInputField = loginForm.appendChild(createInputField({
+    loginForm.appendChild(createInputField({
         divId: "form_username", 
         paragraphId: "username_error", 
         paragraphClass: "error",
@@ -95,7 +94,7 @@ function renderLoginForm() {
             setFormValue(e.target.id, e.target.value);
         }
     }));
-    const passwordInputField = loginForm.appendChild(createInputField({
+    loginForm.appendChild(createInputField({
         divId: "form_password", 
         paragraphId: "password_error", 
         paragraphClass: "error",
@@ -109,31 +108,28 @@ function renderLoginForm() {
         }
     }));
     loginForm.appendChild(createButton("login_btn", setTouchedElements));
-    const authenticationError = createParagraph("authentication_error", formErrors.authentication ,"error"); 
-    loginForm.appendChild(authenticationError);
-
-    const usernameError = usernameInputField.querySelector("#username_error");
-    const passwordError = passwordInputField.querySelector("#password_error");
+    loginForm.appendChild(createParagraph("authentication_error", formErrors.authentication ,"error")); 
 
     const currentForm = document.querySelector(".form_container");
-    const currentUsernameError = document.querySelector("#username_error");
-    const currentPasswordError = document.querySelector("#password_error");
-    const currentAuthenticationError = document.querySelector("#authentication_error");
-
     if(!currentForm) {
         document.body.append(parentElement);
-    } else if(!currentUsernameError.isEqualNode(usernameError)) {
-        currentUsernameError.remove();
-        document.querySelector("#form_username").appendChild(usernameError);
-    } else if(!currentPasswordError.isEqualNode(passwordError)) {
-        currentPasswordError.remove();
-        document.querySelector("#form_password").appendChild(passwordError);
-    }else if(!currentAuthenticationError.isEqualNode(authenticationError)) {
-        currentAuthenticationError.remove();
-        document.querySelector("#login").appendChild(authenticationError);
+    }else {
+        replaceChild(currentForm, parentElement);
     }
 }
 
+function replaceChild(currentForm, form){
+    if(!currentForm.isEqualNode(form)){
+        for(let i = 0; i < currentForm.children.length; i++) {
+            replaceChild(currentForm.children.item(i), form.children.item(i))  
+        }
+    }
+    if(!currentForm.isEqualNode(form) && !currentForm.firstElementChild){
+        currentForm.replaceWith(form);
+    }
+    return;
+}
+ 
 function createFormContainer(finalValidationHandler) {
     const divFormContainer = createBaseElement({ className: "form_container" });
     const loginForm = divFormContainer.appendChild(createBaseElement({
