@@ -1,4 +1,4 @@
-let validationErrors = {};
+let formErrors = {};
 let formValues = {};
 let touchedElements = [];
 
@@ -8,78 +8,76 @@ const userInfo = {
     token: ""
 };
 
-createLoginForm();
-
-function isValidUsername(setError, showError, errorId, currentUsername, correctUsername, error) {
-    const nameRegex = /^[a-zA-Z\-]+$/;
-
-    if (!currentUsername) {
-        setError("errorUsername","The username is empty");
-    } else if (currentUsername.length > 10 || currentUsername.length < 4) {
-        setError("errorUsername","The username should be between 4 - 10");
-    } else if (!currentUsername.match(nameRegex)) {
-        setError("errorUsername","The username contains characters that are not allowed");
-    } else if (currentUsername !== correctUsername) {
-        setError("errorUsername","Username is not correct");
-    } else {
-        return true;
-    }
-
-    showError(errorId, error.errorUsername);
-
-    return false;
-}
-
-function isValidPassword(setError, showError, errorId, currentPassword, correctPassword, error) {
-    const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
-
-    if (!currentPassword) {
-        setError("errorPassword","The password is empty");
-    } else if (currentPassword.length > 15 || currentPassword.length < 4) {
-        setError("errorPassword","The password should be between 4 - 15");
-    } else if (!currentPassword.match(nameRegex)) {
-        setError("errorPassword","The password contains characters that are not allowed");   
-    } else if (currentPassword !== correctPassword) {
-        setError("errorPassword","Password is not correct");
-    } else {
-        return true;
-    }
-
-    showError(errorId, error.errorPassword);
-
-    return false;
-}
-
-function showError(elementId, textError) {
-    document.getElementById(elementId).textContent = textError;
-}
-
-function setValidationError(fieldNameKey, error) {
-    validationErrors[fieldNameKey] = error;
-}
-
-function finalValidation(e) {
-    e.preventDefault();
-    
-    if (
-        isValidUsername(setValidationError, showError, "username_error", formValues.username, userInfo.username, validationErrors)
-        & isValidPassword(setValidationError, showError, "password_error", formValues.password, userInfo.password, validationErrors)
-    ) {
-        userInfo.token = "xxx";
-        alert("correct");
-    }  
-}
-
-function setFormValue(e) {
-    formValues[e.target.id] = e.target.value;
+function setFormValue(fieldNameKey, value) {
+    formValues[fieldNameKey] = value;
+    validateField(fieldNameKey, value);
 }
 
 function setTouchedElements(e) {
     touchedElements.push(e.target);
 }
 
-function createLoginForm() {
-    const parentElement = createFormContainer(finalValidation);
+function setFormErrors(fieldNameKey, error) {
+    formErrors[fieldNameKey] = error;
+}
+
+rendorLoginForm();
+
+function validateField(fieldName, value){
+    if(fieldName === "username") {
+        setFormErrors(fieldName, isValidUsername(value));
+    }
+    if(fieldName === "password") {
+        setFormErrors(fieldName, isValidPassword(value));
+    }
+}
+
+function isValidUsername(value) {
+    const nameRegex = /^[a-zA-Z\-]+$/;
+
+    if (!value) {
+        return "The username is empty";
+    } else if (value.length > 10 || value.length < 4) {
+        return "The username should be between 4 - 10";
+    } else if (!value.match(nameRegex)) {
+        return "The username contains characters that are not allowed";
+    }
+}
+
+function isValidPassword(value) {
+    const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
+
+    if (!value) {
+        return "The password is empty";
+    } else if (value.length > 15 || value.length < 4) {
+        return "The password should be between 4 - 15";
+    } else if (!value.match(nameRegex)) {
+        return "The password contains characters that are not allowed";
+    }   
+}
+
+function checkLoginPassword(currentValue, rightValue) {
+    if(currentValue.username === rightValue.username && currentValue.password === rightValue.password) {
+        return true;
+    }
+    return false;
+}
+
+function onSubmitHandler(e) {
+    e.preventDefault();
+
+    if (checkLoginPassword(formValues, userInfo)) {
+        userInfo.token = "xxx";
+        alert("correct");
+    } else {
+        setFormErrors("authentication", "Username or password is not correct");
+        rendorLoginForm();
+    }
+}
+
+function rendorLoginForm() {
+
+    const parentElement = createFormContainer(onSubmitHandler);
     const loginForm = parentElement.querySelector("#login");
 
     loginForm.appendChild(createTitle("Login form"));
@@ -90,9 +88,11 @@ function createLoginForm() {
         inputName: "username", 
         labelText: "Username", 
         inputValue: formValues.username, 
-        error: validationErrors.username,
+        error: formErrors.username,
         onClick: setTouchedElements, 
-        onInput: setFormValue,
+        onInput: function(e) {
+            setFormValue(e.target.id, e.target.value);
+        }
     }));
     loginForm.appendChild(createInputField({
         divId: "form_password", 
@@ -101,13 +101,22 @@ function createLoginForm() {
         inputName: "password", 
         labelText: "Password", 
         inputValue: formValues.password, 
-        error: validationErrors.password,
+        error: formErrors.password,
         onClick: setTouchedElements, 
-        onInput: setFormValue,
+        onInput: function(e) {
+            setFormValue(e.target.id, e.target.value);
+        }
     }));
-    loginForm.appendChild(createButton("login_btn", setTouchedElements)); 
+    loginForm.appendChild(createButton("login_btn", setTouchedElements));
+    loginForm.appendChild(createParagraph("authentication_error", formErrors.authentication ,"error")); 
 
-    document.body.append(parentElement);
+    const currentForm = document.querySelector(".form_container");
+    if(!currentForm) {
+        document.body.append(parentElement);
+    } else if(!currentForm.isEqualNode(parentElement)){
+        currentForm.remove();
+        document.body.append(parentElement);
+    }
 }
 
 function createFormContainer(finalValidationHandler) {
