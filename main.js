@@ -76,9 +76,8 @@ function onSubmitHandler(e) {
 }
 
 function renderLoginForm() {
-
-    const parentElement = createFormContainer(onSubmitHandler);
-    const loginForm = parentElement.children.item(0);
+    const form = createFormContainer(onSubmitHandler);
+    const loginForm = form.children.item(0);
 
     loginForm.appendChild(createTitle("Login form"));
     loginForm.appendChild(createInputField({
@@ -112,20 +111,20 @@ function renderLoginForm() {
 
     const currentForm = document.querySelector(".form_container");
     if(!currentForm) {
-        document.body.append(parentElement);
-    }else {
-        replaceChild(currentForm, parentElement);
+        document.body.append(form);
+    } else {
+        replaceChangedChild(currentForm, form);
     }
 }
 
-function replaceChild(currentForm, form){
-    if(!currentForm.isEqualNode(form)){
+function replaceChangedChild(currentForm, form) {
+    if(!currentForm.isEqualNode(form)) {
         for(let i = 0; i < currentForm.children.length; i++) {
-            replaceChild(currentForm.children.item(i), form.children.item(i))  
+            replaceChangedChild(currentForm.children.item(i), form.children.item(i))  
         }
-    }
-    if(!currentForm.isEqualNode(form) && !currentForm.firstElementChild){
-        currentForm.replaceWith(form);
+        if(!currentForm.firstElementChild) {
+            currentForm.replaceWith(form);
+        }
     }
     return;
 }
