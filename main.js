@@ -57,11 +57,10 @@ function isValidPassword(value) {
     }   
 }
 
-function checkLoginPassword(currentValue, rightValue) {
-    if(currentValue.username === rightValue.username && currentValue.password === rightValue.password) {
-        return true;
-    }
-    return false;
+function checkLoginPassword(currentValue, correctValue) {
+    return (currentValue.username === correctValue.username
+        && currentValue.password === correctValue.password
+    );
 }
 
 function onSubmitHandler(e) {
@@ -76,8 +75,8 @@ function onSubmitHandler(e) {
 }
 
 function renderLoginForm() {
-    const form = createFormContainer(onSubmitHandler);
-    const loginForm = form.children.item(0);
+    const newForm = createFormContainer(onSubmitHandler);
+    const loginForm = newForm.children.item(0);
 
     loginForm.appendChild(createTitle("Login form"));
     loginForm.appendChild(createInputField({
@@ -111,20 +110,20 @@ function renderLoginForm() {
 
     const currentForm = document.querySelector(".form_container");
     if(!currentForm) {
-        document.body.append(form);
+        document.body.append(newForm);
     } else {
-        replaceChangedChild(currentForm, form);
+        replaceChangedChild(currentForm, newForm);
     }
 }
 
-function replaceChangedChild(currentForm, form) {
-    if(!currentForm.isEqualNode(form)) {
+function replaceChangedChild(currentForm, modifiedForm) {
+    if(!currentForm.isEqualNode(modifiedForm)) {
         for(let i = 0; i < currentForm.children.length; i++) {
-            replaceChangedChild(currentForm.children.item(i), form.children.item(i))  
+            replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i))  
         }
-        if(!currentForm.firstElementChild) {
-            currentForm.replaceWith(form);
-        }
+    }
+    if(!currentForm.isEqualNode(modifiedForm) && !currentForm.firstElementChild) {
+        currentForm.replaceWith(modifiedForm);
     }
     return;
 }
@@ -162,7 +161,6 @@ function createInputField({
     }));
     inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createParagraph(paragraphId, error, paragraphClass));
-    
     return inputField;
 }
 
@@ -212,7 +210,6 @@ function createInput({
     input.required = true;
 
     input.addEventListener("input", onInput);
-
     input.addEventListener("click", onClick);
 
     return input;
