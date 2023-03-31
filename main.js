@@ -24,7 +24,7 @@ function setFormErrors(fieldNameKey, error) {
 
 renderLoginForm();
 
-function validateField(fieldName, value){
+function validateField(fieldName, value) {
     if(fieldName === "username") {
         setFormErrors(fieldName, isValidUsername(value));
     }
@@ -41,7 +41,7 @@ function isValidUsername(value) {
     } else if (value.length > 10 || value.length < 4) {
         return "The username should be between 4 - 10";
     } else if (!value.match(nameRegex)) {
-        return "The username contains characters that are not allowed";
+        return "Characters are not allowed";
     }
 }
 
@@ -53,7 +53,7 @@ function isValidPassword(value) {
     } else if (value.length > 15 || value.length < 4) {
         return "The password should be between 4 - 15";
     } else if (!value.match(nameRegex)) {
-        return "The password contains characters that are not allowed";
+        return "Characters are not allowed";
     }   
 }
 
@@ -154,13 +154,13 @@ function createInputField({
     onInput
 }) {
     const inputField = createBaseElement({ className: "form_input", tagId: divId });
-    inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createInput({
         onClick: onClick,
         onInput: onInput,
         value: inputValue,
         name: inputName,
     }));
+    inputField.appendChild(createLabel(inputName, labelText));
     inputField.appendChild(createParagraph(paragraphId, error, paragraphClass));
     
     return inputField;
@@ -203,14 +203,13 @@ function createInput({
     value = "", 
     name, 
     inputId = name, 
-    placeholder = name, 
     type = name
 }) {
     const input = createBaseElement({ tagName: "input", tagId: inputId });
     input.value = value;
     input.type = type;
     input.name = name;
-    input.placeholder = placeholder;
+    input.required = true;
 
     input.addEventListener("input", onInput);
 
