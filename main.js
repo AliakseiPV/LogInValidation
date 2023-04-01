@@ -117,12 +117,15 @@ function renderLoginForm() {
 }
 
 function replaceChangedChild(currentForm, modifiedForm) {
+    if(currentForm.isEqualNode(modifiedForm)) {
+        return;
+    }
     if(!currentForm.isEqualNode(modifiedForm)) {
         for(let i = 0; i < currentForm.children.length; i++) {
-            replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i))  
+            replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i));  
         }
     }
-    if(!currentForm.isEqualNode(modifiedForm) && !currentForm.firstElementChild) {
+    if(!currentForm.firstElementChild) {
         currentForm.replaceWith(modifiedForm);
     }
     return;
