@@ -1,4 +1,6 @@
-createLoginForm();
+let formErrors = {};
+let formValues = {};
+let touchedElements = [];
 
 const userInfo = {
     username: "user",
@@ -6,148 +8,217 @@ const userInfo = {
     token: ""
 };
 
-const loginForm = document.querySelector("#login")
-const usernameInput = document.querySelector("#username");
-const userPassword = document.querySelector("#password");
-
-loginForm.addEventListener("submit",function(e){
-    
-     e.preventDefault();
-
-    if (isValidUsername() && isValidPassword()) {
-        if (checkData()) {
-            userInfo.token = "xxx"
-            alert("correct");
-        } else{
-            fieldsClear();
-        }
-    } else{
-        fieldsClear();
-    }    
-    
-});
-
-function isValidUsername() {
-    const nameRegex = /^[a-zA-Z\-]+$/;
-
-    if(!usernameInput.value){
-        showError("form_username","The username is empty");
-    } else if(usernameInput.value.length > 10 || usernameInput.value.length < 4){
-        showError("form_username","The username should be between 4 - 10");
-    } else if(!usernameInput.value.match(nameRegex)){
-        showError("form_username","the username contains characters that are not allowed");
-    } else 
-        return true;
-
-    return false;
+function setFormValue(fieldNameKey, value) {
+    formValues[fieldNameKey] = value;
+    validateField(fieldNameKey, value);
 }
 
-function isValidPassword() {
-    const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
-
-    if(!userPassword.value){
-        showError("form_password","The user password is empty")
-    } else if(userPassword.value.length > 15 || userPassword.value.length < 4){
-        showError("form_password","The user password should be between 4 - 15")
-    } else if(!userPassword.value.match(nameRegex)){
-        showError("form_password","The user password contains characters that are not allowed")
-    } else
-        return true;
-
-    return false;
+function setTouchedElements(e) {
+    touchedElements.push(e.target);
 }
 
-//Checking for a matching login and password
-function checkData() { 
-    if(usernameInput.value === userInfo.username &&
-        userPassword.value === userInfo.password){
-        return true;
-    } else showError("form_username","Username or password is not correct");
-
-    return false;
+function setFormErrors(fieldNameKey, error) {
+    formErrors[fieldNameKey] = error;
+    renderLoginForm();
 }
 
-function fieldsClear() {
-    usernameInput.value = "";
-    userPassword.value = "";
-}
+renderLoginForm();
 
-// Output exeption message
-function showError(elementId, textError)
-{    
-    removeError();
-    const error = document.getElementById(elementId).appendChild(document.createElement("p"));
-    error.classList.add("error");
-    error.textContent = textError;
-}
-
-// Delete exeption message
-function removeError(){
-    if(document.getElementById("form_username").contains(document.querySelector(".error"))){
-        document.getElementById("form_username").removeChild(document.querySelector(".error"));
-    } else if(document.getElementById("form_password").contains(document.querySelector(".error"))){
-        document.getElementById("form_password").removeChild(document.querySelector(".error"));
+function validateField(fieldName, value) {
+    if(fieldName === "username") {
+        setFormErrors(fieldName, isValidUsername(value));
+    }
+    if(fieldName === "password") {
+        setFormErrors(fieldName, isValidPassword(value));
     }
 }
 
-// Creating html registration form
-function createLoginForm() {
-    document.body.append(createFormContainer());
+function isValidUsername(value) {
+    const nameRegex = /^[a-zA-Z\-]+$/;
 
-    const parentElement = document.getElementById("login");
-    parentElement.appendChild(createTitle("Login form"));
-    parentElement.appendChild(createInputField("form_username","username", "Username"));
-    parentElement.appendChild(createInputField("form_password","password", "Password"));
-    parentElement.appendChild(createButton("login_btn")); 
+    if (!value) {
+        return "The username is empty";
+    } else if (value.length > 10 || value.length < 4) {
+        return "The username should be between 4 - 10";
+    } else if (!value.match(nameRegex)) {
+        return "Characters are not allowed";
+    }
 }
 
-function createFormContainer(){
-    const divFormContainer = createBaseElement({className: "form_container"});
-    divFormContainer.appendChild(createBaseElement({tagName: "form", className: "form", tagId: "login"}));
-    
+function isValidPassword(value) {
+    const nameRegex = /^[a-zA-Z0-9!@#$%^&*\-]+$/;
+
+    if (!value) {
+        return "The password is empty";
+    } else if (value.length > 15 || value.length < 4) {
+        return "The password should be between 4 - 15";
+    } else if (!value.match(nameRegex)) {
+        return "Characters are not allowed";
+    }   
+}
+
+function checkLoginPassword(currentValue, correctValue) {
+    return (
+        currentValue.username === correctValue.username
+        && currentValue.password === correctValue.password
+    );
+}
+
+function onSubmitHandler(e) {
+    e.preventDefault();
+
+    if (checkLoginPassword(formValues, userInfo)) {
+        userInfo.token = "xxx";
+        alert("correct");
+    } else {
+        setFormErrors("authentication", "Username or password is not correct");
+    }
+}
+
+function renderLoginForm() {
+    const newForm = createFormContainer(onSubmitHandler);
+    const loginForm = newForm.children.item(0);
+
+    loginForm.appendChild(createTitle("Login form"));
+    loginForm.appendChild(createInputField({
+        divId: "form_username", 
+        paragraphId: "username_error", 
+        paragraphClass: "error",
+        inputName: "username", 
+        labelText: "Username", 
+        inputValue: formValues.username, 
+        error: formErrors.username,
+        onClick: setTouchedElements, 
+        onInput: function(e) {
+            setFormValue(e.target.id, e.target.value);
+        }
+    }));
+    loginForm.appendChild(createInputField({
+        divId: "form_password", 
+        paragraphId: "password_error", 
+        paragraphClass: "error",
+        inputName: "password", 
+        labelText: "Password", 
+        inputValue: formValues.password, 
+        error: formErrors.password,
+        onClick: setTouchedElements, 
+        onInput: function(e) {
+            setFormValue(e.target.id, e.target.value);
+        }
+    }));
+    loginForm.appendChild(createButton("login_btn", setTouchedElements));
+    loginForm.appendChild(createParagraph("authentication_error", formErrors.authentication ,"error")); 
+
+    const currentForm = document.querySelector(".form_container");
+    if(!currentForm) {
+        document.body.append(newForm);
+    } else {
+        replaceChangedChild(currentForm, newForm);
+    }
+}
+
+function replaceChangedChild(currentForm, modifiedForm) {
+    if(currentForm.isEqualNode(modifiedForm)) {
+        return;
+    }
+    for(let i = 0; i < currentForm.children.length; i++) {
+        replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i));  
+    }
+    if(!currentForm.firstElementChild) {
+        currentForm.replaceWith(modifiedForm);
+    }
+    return;
+}
+ 
+function createFormContainer(finalValidationHandler) {
+    const divFormContainer = createBaseElement({ className: "form_container" });
+    const loginForm = divFormContainer.appendChild(createBaseElement({
+        tagName: "form",
+        className: "form",
+        tagId: "login",
+    }));
+
+    loginForm.addEventListener("submit", finalValidationHandler);
+
     return divFormContainer;
 }
 
-function createInputField(divId, inputName, labelText){
-    const inputField = createBaseElement({className: "form_input", tagId: divId});
+function createInputField({
+    divId, 
+    paragraphId, 
+    paragraphClass, 
+    inputName, 
+    labelText, 
+    inputValue, 
+    error, 
+    onClick, 
+    onInput
+}) {
+    const inputField = createBaseElement({ className: "form_input", tagId: divId });
+    inputField.appendChild(createInput({
+        onClick: onClick,
+        onInput: onInput,
+        value: inputValue,
+        name: inputName,
+    }));
     inputField.appendChild(createLabel(inputName, labelText));
-    inputField.appendChild(createInput(inputName));
+    inputField.appendChild(createParagraph(paragraphId, error, paragraphClass));
     return inputField;
 }
 
-function createBaseElement({tagName = "div", className, tagId}){
+function createBaseElement({ tagName = "div", className, tagId }) {
     const baseElement = document.createElement(tagName);
     if(className) baseElement.setAttribute("class", className);
     if(tagId) baseElement.setAttribute("id", tagId);
     return baseElement;
 }
 
-function createButton(buttonId){
-    const divButton = createBaseElement({className: "button"});
-    const button = createBaseElement({tagName: "button", tagId: buttonId});
+function createButton(buttonId, onClick) {
+    const divButton = createBaseElement({ className: "button" });
+    const button = createBaseElement({ tagName: "button", tagId: buttonId });
     button.textContent = "login";
     divButton.appendChild(button);
+
+    button.addEventListener("click", onClick);
+    
     return divButton;
 }
 
-function createTitle(titleText){
+function createTitle(titleText) {
     const title = document.createElement("h1");
     title.textContent = titleText;
     return title;
 }
 
-function createLabel(htmlForName, labelText){
+function createLabel(htmlForName, labelText) {
     const label = document.createElement("label");
     label.htmlForName = htmlForName;
     label.textContent = labelText;
     return label;
 } 
 
-function createInput(name, inputId = name, placeholder = name, type = name){
-    const input = createBaseElement({tagName: "input", tagId: inputId});
+function createInput({
+    onClick, 
+    onInput, 
+    value = "", 
+    name, 
+    inputId = name, 
+    type = name
+}) {
+    const input = createBaseElement({ tagName: "input", tagId: inputId });
+    input.value = value;
     input.type = type;
     input.name = name;
-    input.placeholder = placeholder;
+    input.required = true;
+
+    input.addEventListener("input", onInput);
+    input.addEventListener("click", onClick);
+
     return input;
 }
 
+function createParagraph(paragraphId, text, className) {
+    const paragraph = createBaseElement({ tagName: "p", className, tagId: paragraphId });
+    paragraph.textContent = text;
+    return paragraph;
+}
