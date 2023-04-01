@@ -58,7 +58,8 @@ function isValidPassword(value) {
 }
 
 function checkLoginPassword(currentValue, correctValue) {
-    return (currentValue.username === correctValue.username
+    return (
+        currentValue.username === correctValue.username
         && currentValue.password === correctValue.password
     );
 }
@@ -120,10 +121,8 @@ function replaceChangedChild(currentForm, modifiedForm) {
     if(currentForm.isEqualNode(modifiedForm)) {
         return;
     }
-    if(!currentForm.isEqualNode(modifiedForm)) {
-        for(let i = 0; i < currentForm.children.length; i++) {
-            replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i));  
-        }
+    for(let i = 0; i < currentForm.children.length; i++) {
+        replaceChangedChild(currentForm.children.item(i), modifiedForm.children.item(i));  
     }
     if(!currentForm.firstElementChild) {
         currentForm.replaceWith(modifiedForm);
